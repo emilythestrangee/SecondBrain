@@ -1,0 +1,281 @@
+SecondBrain — Project Prompt (copy-paste ready)
+
+Project: SecondBrain — a local-first, encrypted “second brain” task & thought manager
+
+Goal: Build a polished mobile app (Flutter / Kotlin / Swift) that meets the hiring brief (add/edit/delete tasks, mark complete, All/Active/Completed, due date, search) and demonstrates engineering and cybersecurity maturity through:
+
+a Contextual Smart Queue (value/time/energy optimization),
+
+Focus Sessions (Pomodoro++) with telemetry,
+
+a Task Dependency Graph (detect & prevent cycles), and
+
+Local AES-256 encryption + a Digital Security Health score.
+
+Deliverables: GitHub repo with clear README, screenshots/GIF demo, APK (or TestFlight/demo GIF), unit tests (scheduler, cycle detection), and a GitHub Actions CI that runs flutter analyze, flutter test, and builds APK. All data must be local and optionally encrypted; no cloud required.
+
+One-paragraph elevator pitch (use in README/email)
+
+SecondBrain is a local-first “second brain” that combines intelligent task scheduling (knapsack + heuristics), a dependency graph visualizer, and an encrypted offline database with a cyber-aware UX. It suggests optimal focus sessions given your time and energy, logs session telemetry for self-improvement, and gently gamifies secure behavior via XP and a “Digital Security Health” score.
+
+Why this impresses recruiters (say this in interview)
+
+Shows algorithmic thinking (knapsack/greedy + DP fallback).
+
+Uses graph algorithms (cycle detection, O(N+E)).
+
+Demonstrates security awareness (AES-256 local encryption, secure key management).
+
+Clean architecture + DI + unit tests + CI — shows readiness for production engineering tasks.
+
+Tech Stack (recommended)
+
+Framework: Flutter (single codebase → APK & iOS)
+
+Local DB: Isar (object DB) with encryption OR Drift (SQLite) + SQLCipher if you prefer SQL
+
+State: Riverpod (testable providers) or BLoC
+
+DI: get_it or Riverpod DI patterns
+
+Secure key storage: flutter_secure_storage (platform keychain/keystore)
+
+Charts/Graphs: fl_chart or graphview (for dependency graph)
+
+Testing: flutter_test + mocktail
+
+CI: GitHub Actions (analyze → test → build → artifact)
+
+Data model (core)
+class Task {
+  String id;
+  String title;
+  String? notes;
+  DateTime? dueDate;
+  int durationMinutes; // estimate
+  int energyCost; // 1..5
+  int value; // 1..100 priority score
+  List<String> dependsOn; // task ids
+  bool completed;
+  DateTime createdAt;
+}
+
+Key features & how to implement them
+1) Core (must)
+
+Add / edit / delete tasks, mark complete.
+
+Filter All / Active / Completed.
+
+Search (fuzzy matching, substring).
+
+Local DB with encryption.
+
+2) Contextual Smart Queue (standout)
+
+Inputs: timeBudget (minutes), energyBudget (1..N), optional tags/contexts.
+
+Algorithm:
+
+Greedy baseline: sort by value/duration and pick tasks fitting budgets (fast, great UX).
+
+DP knapsack fallback: if candidate tasks ≤ 40, run 0/1 knapsack (time & energy — reduce to single constraint by scaling or use 2D DP if small N) to get optimal subset.
+
+Explain decisions to the user: “Selected to maximize value within 90m & low energy.”
+
+Greedy snippet
+
+List<Task> scheduleGreedy(List<Task> tasks, int timeBudget, int energyBudget) {
+  final sorted = tasks.where((t)=>!t.completed).toList()
+    ..sort((a,b)=>(b.value/a.durationMinutes).compareTo(a.value/b.durationMinutes));
+  var timeLeft=timeBudget, energyLeft=energyBudget;
+  final selected = <Task>[];
+  for(final t in sorted){
+    if(t.durationMinutes <= timeLeft && t.energyCost <= energyLeft){
+      selected.add(t);
+      timeLeft -= t.durationMinutes;
+      energyLeft -= t.energyCost;
+    }
+  }
+  return selected;
+}
+
+3) Focus Session (Pomodoro++)
+
+Start session from suggested queue; run sequential timers per task.
+
+Track telemetry: sessionStart, pauses, interruptions, actualTimePerTask.
+
+Break suggestions: 5s breathing, 20/20/20 eye break, device lock reminder.
+
+Auto-mark tasks completed if they finish.
+
+4) Task Dependency Graph
+
+Allow linking tasks (dependsOn).
+
+Show graph with minimal UI; detect cycles with DFS and refuse circular links.
+
+bool hasCycle(Map<String,List<String>> graph) {
+  final visited = <String>{}, stack = <String>{};
+  bool dfs(String node) {
+    if (stack.contains(node)) return true;
+    if (visited.contains(node)) return false;
+    visited.add(node); stack.add(node);
+    for (final nei in graph[node] ?? []) if (dfs(nei)) return true;
+    stack.remove(node); return false;
+  }
+  for (final n in graph.keys) if (!visited.contains(n) && dfs(n)) return true;
+  return false;
+}
+
+5) Local Encryption & Cyber Features
+
+Encryption: Use Isar encrypted box or Drift+SQLCipher. Store encryption key in flutter_secure_storage (device keystore). Example: Isar.open([TaskSchema], encryptionKey: await secureKey()).
+
+Digital Security Health: local heuristic based on task tags and behaviors (e.g., storing sensitive text, ignoring security tasks, late-night work). Provide suggestions and score.
+
+Threat Simulation (optional gamified security): periodic simulated micro-events to practice secure responses; reward quick good behaviors with XP.
+
+Architecture & folder layout
+lib/
+  core/
+  data/
+    local/      // isar_service.dart
+    models/
+    repositories/
+  domain/
+    entities/
+    usecases/   // schedule, cycle check, telemetry
+  presentation/
+    pages/
+    widgets/
+    providers/
+  main.dart
+
+
+Keep UI layer thin, business logic in domain/usecases, and persistence in data/local.
+
+Tests (minimum)
+
+scheduler_test.dart — greedy vs expected on synthetic data.
+
+cycle_detection_test.dart — detect cycles & non-cycles.
+
+serialization_test.dart — write & read Task to DB (encrypt & decrypt).
+
+Add analysis_options.yaml with medium strictness.
+
+GitHub Actions (skeleton)
+name: Flutter CI
+
+on: [push, pull_request]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with: { flutter-version: '3.13.1' }
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test --coverage
+      - run: flutter build apk --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+UX demo script (20–30s GIF)
+
+Open app: show calendar + color coded tasks.
+
+Tap Suggest Focus Session → set 90m, energy low → app shows selected tasks + explanation.
+
+Start session → timer runs, show break prompt, resume, auto-complete a task.
+
+Open task detail → add dependency; show cycle prevention dialog.
+
+Open Security Health → show advice + earned “NoInterrupts” badge.
+
+README starter (paste into README.md)
+# SecondBrain
+
+SecondBrain is a local-first, encrypted task manager + second brain that suggests optimal focus sessions using a knapsack/greedy scheduler, visualizes task dependencies, and adds cybersecurity-aware features (local AES encryption, a Digital Security Health score, and threat-simulation microchallenges).
+
+## Tech
+Flutter · Isar (encrypted) · Riverpod · flutter_secure_storage · GitHub Actions
+
+## Quickstart
+```bash
+git clone https://github.com/you/SecondBrain.git
+cd SecondBrain
+flutter pub get
+flutter run
+
+Highlights
+
+Smart Queue (greedy + DP fallback)
+
+Focus Session player + telemetry
+
+Dependency graph & cycle prevention
+
+Local AES-256 encryption & secure key in platform keystore
+
+Unit tests & CI
+
+
+---
+
+# Suggested commit messages
+- `feat(core): add Task model and Isar schema`
+- `feat(scheduler): implement greedy + DP fallback scheduler`
+- `feat(ui): focus session player`
+- `feat(security): add Isar encryption and secure key storage`
+- `test: add scheduler and cycle detection tests`
+- `ci: add GitHub Actions (analyze, test, build)`
+
+---
+
+# Deliverables checklist to submit
+- [ ] GitHub repo (clean readme + GIFs + architecture.md)  
+- [ ] APK artifact / TestFlight / demo GIF  
+- [ ] Unit tests (pass) + CI passing  
+- [ ] Short video/GIF (20–30s) highlighting scheduler & session  
+- [ ] Short notes: algorithms you used and why (1-page)
+
+---
+
+# Quick talking points for interview
+- “I modeled prioritization as a knapsack problem — shipped greedy for speed and DP for correctness on small sets.”  
+- “I used Isar with AES encryption and stored the key in secure storage. Data never leaves the device.”  
+- “I instrumented local telemetry to measure interruptions, which can be used to A/B future scheduler heuristics.”  
+- “Code is modular and testable — core algorithms are covered by unit tests and CI.”
+
+---
+
+# AI / No-code tools that can help you build this fast (short list & why)
+If you want to prototype quickly (then port or export code), these are the best options:
+
+- **FlutterFlow** — Visual Flutter builder, exports real Flutter code, supports custom logic and AI connectors. Good for prototyping UI + wiring logic quickly. :contentReference[oaicite:0]{index=0}.  
+- **Appy Pie (AI App Maker)** — text-to-app builder for rapid prototypes without code; good for fast MVPs (limited export/code control). :contentReference[oaicite:1]{index=1}.  
+- **Thunkable** — visual mobile app builder with block logic, fast prototyping and mobile exports (good for simple apps). :contentReference[oaicite:2]{index=2}.  
+- **Draftbit** — visual builder that exports production React Native code (good if you prefer RN over Flutter). :contentReference[oaicite:3]{index=3}.  
+- **Glide / Adalo** — quickest for spreadsheet-backed prototypes or admin dashboards; limited native features but very fast. :contentReference[oaicite:4]{index=4}.
+
+**Recommendation:** Use **FlutterFlow** if you want a fast visual build *and* exportable Flutter code you can extend with Isar/encryption and custom algorithms. :contentReference[oaicite:5]{index=5}.
+
+---
+
+# Final next-step (I’ll do it for you if you want)
+Tell me which of these you want me to generate next (I will produce actual code or config in the chat — ready to paste):
+
+- Full `pubspec.yaml` + dependency list (Isar, Riverpod, flutter_secure_storage, graphview, fl_chart)  
+- Starter code: Task model + Isar schema + greedy scheduler + unit test  
+- GitHub Actions YAML (ready to paste into `.github/workflows/flutter_ci.yml`)  
+- A short 20s demo GIF script + checklist for recording
+
+Which one should I generate now?
+::contentReference[oaicite:6]{index=6}

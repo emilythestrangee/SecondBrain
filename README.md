@@ -44,7 +44,23 @@ A local-first, encrypted task manager built with Flutter that combines intellige
 
 ## Screenshots
 
+<img width="717" height="830" alt="image" src="https://github.com/user-attachments/assets/dd7eb6fd-3b16-46f2-994c-576edb144f5f" />
 
+<img width="727" height="825" alt="image" src="https://github.com/user-attachments/assets/eb9837d9-017b-45b0-a7bd-e15bf106f452" />
+
+<img width="740" height="832" alt="image" src="https://github.com/user-attachments/assets/d0e60d08-4195-4dd7-87d1-2e76a890f032" />
+
+<img width="741" height="828" alt="image" src="https://github.com/user-attachments/assets/24e0bf5e-b960-40a5-b31f-5981001e059f" />
+
+<img width="722" height="828" alt="image" src="https://github.com/user-attachments/assets/8e3b7bd2-8926-42e8-b80f-e8e6832b3664" />
+
+<img width="735" height="826" alt="image" src="https://github.com/user-attachments/assets/7577bb3a-7763-4272-9e09-9c506a4d3fe8" />
+
+<img width="753" height="699" alt="image" src="https://github.com/user-attachments/assets/cb19ffac-bfd9-476e-b62b-809a13410127" />
+
+<img width="1132" height="449" alt="image" src="https://github.com/user-attachments/assets/996e0166-64cf-4339-8c17-cf8972b99b33" />
+
+<img width="990" height="649" alt="image" src="https://github.com/user-attachments/assets/0af81ed9-1e94-477b-b7df-1aa7c2967d28" />
 
 
 

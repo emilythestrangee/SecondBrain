@@ -10,7 +10,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: TaskList(
-              tasks: [],
+              tasks: const [],
               onTaskTap: (task) {},
             ),
           ),

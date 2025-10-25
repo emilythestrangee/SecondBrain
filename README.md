@@ -143,13 +143,6 @@ The app uses SQLite for local storage. The database is automatically initialized
 - **Clean architecture**: Separation of concerns (UI, business logic, data)
 - **Accessibility**: Proper semantic labels, keyboard navigation
 
-## Interview Talking Points
-
-- "I modeled task prioritization as a knapsack problem, implementing both greedy (O(n log n)) for speed and DP for correctness on small sets."
-- "Used DFS-based cycle detection (O(V+E)) to validate task dependency graphs and prevent circular relationships."
-- "Implemented local SQLite database with proper schema design and data relationships."
-- "Built comprehensive telemetry system to track actual vs estimated time, enabling continuous scheduler improvement."
-- "Followed clean architecture principles with clear separation between UI, business logic, and data layers."
 
 ## Future Enhancements
 
@@ -158,14 +151,6 @@ The app uses SQLite for local storage. The database is automatically initialized
 - **Advanced Analytics**: Machine learning for better time estimation
 - **Widget Support**: Home screen widgets for quick task access
 - **Notifications**: Smart reminders based on energy levels and schedules
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Submit a pull request
 
 ## License
 

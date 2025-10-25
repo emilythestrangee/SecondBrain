@@ -41,6 +41,7 @@ dependencies:
   # Utilities
   uuid: ^4.2.1
   collection: ^1.17.2
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:

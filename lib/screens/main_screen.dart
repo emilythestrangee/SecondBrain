@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import '../providers/theme_provider.dart';
 import '../screens/tasks_screen.dart';
 import '../screens/schedule_screen.dart';
 import '../screens/focus_screen.dart';
@@ -73,6 +74,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
               // TODO: Implement search
             },
           ),
+          const ThemeModeToggle(),
         ],
       ),
       drawer: const AppDrawer(),

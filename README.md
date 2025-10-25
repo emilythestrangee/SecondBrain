@@ -151,7 +151,3 @@ The app uses SQLite for local storage. The database is automatically initialized
 - **Advanced Analytics**: Machine learning for better time estimation
 - **Widget Support**: Home screen widgets for quick task access
 - **Notifications**: Smart reminders based on energy levels and schedules
-
-## License
-
-MIT License - see LICENSE file for details

@@ -42,6 +42,12 @@ A local-first, encrypted task manager built with Flutter that combines intellige
 - Productivity metrics: efficiency, interruption counts, energy usage
 - Trend analysis for continuous improvement
 
+## Screenshots
+
+
+
+
+
 ## Architecture
 
 ```

@@ -135,7 +135,7 @@ lib/
 1. Clone the repository:
 ```bash
 git clone <repository-url>
-cd secondbrain_flutter
+cd SecondBrain
 ```
 
 2. Install dependencies:
@@ -164,12 +164,3 @@ The app uses SQLite for local storage. The database is automatically initialized
 - **Type safety**: Full Dart coverage with proper null safety
 - **Clean architecture**: Separation of concerns (UI, business logic, data)
 - **Accessibility**: Proper semantic labels, keyboard navigation
-
-
-## Future Enhancements
-
-- **Local Encryption**: Browser-based AES-256-GCM encryption using Flutter's crypto package
-- **Offline Sync**: Conflict resolution for multi-device usage
-- **Advanced Analytics**: Machine learning for better time estimation
-- **Widget Support**: Home screen widgets for quick task access
-- **Notifications**: Smart reminders based on energy levels and schedules

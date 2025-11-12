@@ -1,4 +1,4 @@
-# SecondBrain Flutter
+# SecondBrain
 
 A local-first, encrypted task manager built with Flutter that combines intelligent task scheduling algorithms, dependency graph visualization with cycle detection, and cybersecurity-aware features.
 
